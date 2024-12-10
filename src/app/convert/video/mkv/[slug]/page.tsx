@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { ConverterPage } from '@/components/converter-page'
 import type { VideoFormat } from '@/lib/ffmpeg/types'
+import type { Metadata } from 'next'
 
 type TargetFormats = Exclude<VideoFormat, 'mkv'>
 
@@ -10,6 +11,57 @@ const validFormats: TargetFormats[] = ['avi', 'flv', 'mov', 'mp4', 'webm']
 export const dynamic = 'force-static'
 export const revalidate = false
 export const fetchCache = 'force-cache'
+
+// Generate metadata for each format
+export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
+  const format = params.slug as TargetFormats
+  
+  if (!validFormats.includes(format)) {
+    return {
+      title: 'Format Not Found',
+      description: 'The requested conversion format is not supported.',
+    }
+  }
+
+  const formatName = format.toUpperCase()
+  const title = `Convert MKV to ${formatName} Online - Free Browser-based Converter`
+  const description = `Convert MKV videos to ${formatName} format online. Free, fast, and secure browser-based conversion. No upload needed, all processing happens locally.`
+
+  return {
+    title,
+    description,
+    keywords: [
+      'MKV converter',
+      `MKV to ${formatName}`,
+      'video converter',
+      'online converter',
+      'free converter',
+      'browser-based',
+      'no upload',
+      'secure conversion',
+      format.toLowerCase(),
+      'video format',
+      'file converter',
+      'WebAssembly',
+      'FFmpeg',
+    ],
+    openGraph: {
+      title,
+      description,
+      type: 'website',
+      siteName: 'imatil',
+      locale: 'en_US',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+    },
+    alternates: {
+      canonical: `/convert/video/mkv/${format}`,
+    },
+  }
+}
 
 type Params = Promise<{ slug: string[] }>;
 
