@@ -3,6 +3,13 @@ import { FileQuestion } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 export default function NotFound() {
+  const formats = ['avi', 'flv', 'mkv', 'mov', 'mp4', 'webm'] as const
+  const randomFormat = () => {
+    const from = formats[Math.floor(Math.random() * formats.length)]
+    const to = formats.filter(f => f !== from)[Math.floor(Math.random() * (formats.length - 1))]
+    return `/convert/video/${from}/${to}`
+  }
+
   return (
     <main className="container min-h-screen grid place-items-center">
       <div className="max-w-md mx-auto text-center space-y-8">
@@ -34,8 +41,8 @@ export default function NotFound() {
               </Link>
             </Button>
             <Button asChild variant="outline">
-              <Link href="/convert/video/webm/to-mp4">
-                Convert WebM to MP4
+              <Link href={randomFormat()}>
+                Try a Random Converter
               </Link>
             </Button>
           </div>
@@ -47,4 +54,4 @@ export default function NotFound() {
       </div>
     </main>
   )
-} 
+}
