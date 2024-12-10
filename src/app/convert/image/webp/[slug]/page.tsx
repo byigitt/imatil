@@ -12,9 +12,12 @@ export const dynamic = 'force-static'
 export const revalidate = false
 export const fetchCache = 'force-cache'
 
+type Params = Promise<{ slug: string[] }>;
+
 // Generate metadata for each format
-export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
-  const format = params.slug as TargetFormats
+export async function generateMetadata({ params }: { params: Params }) {
+  const { slug } = await params
+  const format = slug as unknown as TargetFormats
   
   if (!validFormats.includes(format)) {
     return {
@@ -62,8 +65,6 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
     },
   }
 }
-
-type Params = Promise<{ slug: string[] }>;
 
 export default async function WebpConverterPage({ params }: { params: Params }) {
   const { slug } = await params
