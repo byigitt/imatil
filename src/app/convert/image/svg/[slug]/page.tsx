@@ -6,6 +6,11 @@ type TargetFormats = Exclude<ImageFormat, 'svg'>
 
 const validFormats: TargetFormats[] = ['jpg', 'jpeg', 'png', 'webp']
 
+// Force static rendering
+export const dynamic = 'force-static'
+export const revalidate = false
+export const fetchCache = 'force-cache'
+
 type Params = Promise<{ slug: string[] }>;
 
 export default async function SvgConverterPage({ params }: { params: Params }) {

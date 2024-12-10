@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
@@ -6,6 +6,16 @@ const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
 });
+
+// Force static rendering
+export const dynamic = 'force-static'
+export const revalidate = false
+export const fetchCache = 'force-cache'
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
 
 export const metadata: Metadata = {
   title: "imatil - Browser-based File Converter",
@@ -26,7 +36,6 @@ export const metadata: Metadata = {
     "WebM",
   ],
   authors: [{ name: "byigitt" }],
-  viewport: "width=device-width, initial-scale=1",
   robots: "index, follow",
 };
 

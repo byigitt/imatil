@@ -6,6 +6,11 @@ type TargetFormats = Exclude<VideoFormat, 'mov'>
 
 const validFormats: TargetFormats[] = ['avi', 'flv', 'mkv', 'mp4', 'webm']
 
+// Force static rendering
+export const dynamic = 'force-static'
+export const revalidate = false
+export const fetchCache = 'force-cache'
+
 type Params = Promise<{ slug: string[] }>;
 
 export default async function MovConverterPage({ params }: { params: Params }) {

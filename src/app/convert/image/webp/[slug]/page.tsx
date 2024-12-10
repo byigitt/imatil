@@ -6,6 +6,11 @@ type TargetFormats = Exclude<ImageFormat, 'webp'>
 
 const validFormats: TargetFormats[] = ['jpg', 'jpeg', 'png', 'svg']
 
+// Force static rendering
+export const dynamic = 'force-static'
+export const revalidate = false
+export const fetchCache = 'force-cache'
+
 type Params = Promise<{ slug: string[] }>;
 
 export default async function WebpConverterPage({ params }: { params: Params }) {

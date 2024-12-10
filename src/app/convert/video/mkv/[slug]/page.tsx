@@ -6,6 +6,11 @@ type TargetFormats = Exclude<VideoFormat, 'mkv'>
 
 const validFormats: TargetFormats[] = ['avi', 'flv', 'mov', 'mp4', 'webm']
 
+// Force static rendering
+export const dynamic = 'force-static'
+export const revalidate = false
+export const fetchCache = 'force-cache'
+
 type Params = Promise<{ slug: string[] }>;
 
 export default async function MkvConverterPage({ params }: { params: Params }) {

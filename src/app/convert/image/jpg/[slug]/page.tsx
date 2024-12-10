@@ -6,6 +6,11 @@ type TargetFormats = Exclude<ImageFormat, 'jpg' | 'jpeg'>
 
 const validFormats: TargetFormats[] = ['png', 'svg', 'webp']
 
+// Force static rendering
+export const dynamic = 'force-static'
+export const revalidate = false
+export const fetchCache = 'force-cache'
+
 type Params = Promise<{ slug: string[] }>;
 
 export default async function JpgConverterPage({ params }: { params: Params }) {
