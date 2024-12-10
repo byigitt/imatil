@@ -6,15 +6,11 @@ type TargetFormats = Exclude<VideoFormat, 'avi'>
 
 const validFormats: TargetFormats[] = ['flv', 'mkv', 'mov', 'mp4', 'webm']
 
-interface Props {
-  params: {
-    slug: string
-  }
-}
+type Params = Promise<{ slug: string[] }>;
 
-export default async function AviConverterPage({ params }: Props) {
+export default async function AviConverterPage({ params }: { params: Params }) {
   const { slug } = await params
-  const format = slug as TargetFormats
+  const format = slug as unknown as TargetFormats
   
   if (!validFormats.includes(format)) {
     notFound()

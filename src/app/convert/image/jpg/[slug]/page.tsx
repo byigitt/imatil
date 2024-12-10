@@ -6,15 +6,11 @@ type TargetFormats = Exclude<ImageFormat, 'jpg' | 'jpeg'>
 
 const validFormats: TargetFormats[] = ['png', 'svg', 'webp']
 
-interface Props {
-  params: {
-    slug: string
-  }
-}
+type Params = Promise<{ slug: string[] }>;
 
-export default async function JpgConverterPage({ params }: Props) {
+export default async function JpgConverterPage({ params }: { params: Params }) {
   const { slug } = await params
-  const format = slug as TargetFormats
+  const format = slug as unknown as TargetFormats
 
   if (!validFormats.includes(format)) {
     notFound()
