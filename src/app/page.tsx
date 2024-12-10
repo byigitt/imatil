@@ -14,7 +14,7 @@ import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
-const VIDEO_SOURCE_FORMATS = ['WebM', 'MP4', 'AVI', 'MOV'] as const
+const VIDEO_SOURCE_FORMATS = ['WebM', 'MP4', 'AVI', 'MOV', 'FLV'] as const
 const IMAGE_SOURCE_FORMATS = ['JPG', 'PNG', 'WebP', 'AVIF'] as const
 
 type VideoSourceFormat = typeof VIDEO_SOURCE_FORMATS[number]
@@ -26,6 +26,7 @@ const VIDEO_TARGET_FORMATS: Record<VideoSourceFormat, readonly string[]> = {
   'MP4': ['WebM', 'MOV', 'AVI', 'FLV'],
   'AVI': ['MP4', 'WebM', 'MOV', 'FLV'],
   'MOV': ['MP4', 'WebM', 'AVI', 'FLV'],
+  'FLV': ['MP4', 'WebM', 'AVI', 'MOV'],
 } as const
 
 const IMAGE_TARGET_FORMATS: Record<ImageSourceFormat, readonly string[]> = {
