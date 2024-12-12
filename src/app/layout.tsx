@@ -101,8 +101,9 @@ export default function RootLayout({
         <meta name="theme-color" content="#000000" />
       </head>
       <body
-        className={`${inter.variable} font-sans antialiased bg-background text-foreground`}
+        className={`${inter.variable} font-sans antialiased bg-background text-foreground relative min-h-screen`}
       >
+        <div className="absolute inset-0 bg-gradient-to-br from-background via-background/80 to-muted -z-10" />
         {children}
       </body>
     </html>
