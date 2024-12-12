@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { FileVideo, ArrowRight, Image } from 'lucide-react'
+import { FileVideo, ArrowRight, Image, Loader2 } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import {
   Select,
@@ -41,6 +41,7 @@ export default function Home() {
   const [mediaType, setMediaType] = useState<MediaType>('video')
   const [sourceFormat, setSourceFormat] = useState<string>('')
   const [targetFormat, setTargetFormat] = useState<string>('')
+  const [isLoading, setIsLoading] = useState(false)
 
   const sourceFormats = mediaType === 'video' ? VIDEO_SOURCE_FORMATS : IMAGE_SOURCE_FORMATS
   
@@ -53,6 +54,7 @@ export default function Home() {
 
   const handleConvert = () => {
     if (!sourceFormat || !targetFormat) return
+    setIsLoading(true)
     const route = `/convert/${mediaType}/${sourceFormat.toLowerCase()}/${targetFormat.toLowerCase()}`
     router.push(route)
   }
@@ -139,13 +141,23 @@ export default function Home() {
                   className="w-full"
                   size="lg"
                   onClick={handleConvert}
+                  disabled={isLoading}
                 >
-                  {mediaType === 'video' ? (
-                    <FileVideo className="mr-2 h-5 w-5" />
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                      Redirecting...
+                    </>
                   ) : (
-                    <Image className="mr-2 h-5 w-5" />
+                    <>
+                      {mediaType === 'video' ? (
+                        <FileVideo className="mr-2 h-5 w-5" />
+                      ) : (
+                        <Image className="mr-2 h-5 w-5" />
+                      )}
+                      Convert {sourceFormat} to {targetFormat}
+                    </>
                   )}
-                  Convert {sourceFormat} to {targetFormat}
                 </Button>
               </div>
             )}
