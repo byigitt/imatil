@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { ConverterPage } from '@/components/converter-page'
 import type { ImageFormat } from '@/lib/ffmpeg/types'
 import type { Metadata } from 'next'
+import { conversionFeatures } from '@/lib/constants/features'
 
 type TargetFormats = Exclude<ImageFormat, 'svg'>
 
@@ -74,40 +75,7 @@ export default async function SvgConverterPage({ params }: { params: Params }) {
     notFound()
   }
 
-  const features = {
-    jpg: [
-      'Converts SVG images to JPG format',
-      'Raster conversion',
-      'Universal support',
-      'Perfect for sharing',
-      'Optimized quality',
-      'Fast, browser-based conversion',
-    ],
-    jpeg: [
-      'Converts SVG images to JPEG format',
-      'High compatibility',
-      'Efficient compression',
-      'Wide device support',
-      'Great for web use',
-      'Fast, browser-based conversion',
-    ],
-    png: [
-      'Converts SVG images to PNG format',
-      'Preserves transparency',
-      'Lossless quality',
-      'High resolution',
-      'Perfect for graphics',
-      'Fast, browser-based conversion',
-    ],
-    webp: [
-      'Converts SVG images to WebP format',
-      'Modern web format',
-      'Superior compression',
-      'Maintains quality',
-      'Smaller file size',
-      'Fast, browser-based conversion',
-    ],
-  } satisfies Record<TargetFormats, string[]>
+  const features = conversionFeatures.svg[format as Exclude<ImageFormat, 'svg'>]
 
   return (
     <ConverterPage
@@ -118,7 +86,7 @@ export default async function SvgConverterPage({ params }: { params: Params }) {
       acceptTypes={{
         'image/svg+xml': ['.svg'],
       }}
-      features={features[format]}
+      features={features}
       type="image"
     />
   )

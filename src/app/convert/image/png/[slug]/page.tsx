@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { ConverterPage } from '@/components/converter-page'
 import type { ImageFormat } from '@/lib/ffmpeg/types'
 import type { Metadata } from 'next'
+import { conversionFeatures } from '@/lib/constants/features'
 
 type TargetFormats = Exclude<ImageFormat, 'png'>
 
@@ -72,41 +73,8 @@ export default async function PngConverterPage({ params }: { params: Params }) {
   if (!validFormats.includes(format)) {
     notFound()
   }
-
-  const features = {
-    jpg: [
-      'Converts PNG images to JPG format',
-      'Smaller file size',
-      'Universal support',
-      'Perfect for photos',
-      'Efficient compression',
-      'Fast, browser-based conversion',
-    ],
-    jpeg: [
-      'Converts PNG images to JPEG format',
-      'Wide compatibility',
-      'Reduced file size',
-      'Great for sharing',
-      'High-quality output',
-      'Fast, browser-based conversion',
-    ],
-    svg: [
-      'Converts PNG images to SVG format',
-      'Scalable vectors',
-      'Resolution independent',
-      'Perfect for logos',
-      'Small file size',
-      'Fast, browser-based conversion',
-    ],
-    webp: [
-      'Converts PNG images to WebP format',
-      'Modern web format',
-      'Better compression',
-      'Maintains quality',
-      'Perfect for web',
-      'Fast, browser-based conversion',
-    ],
-  } satisfies Record<TargetFormats, string[]>
+  
+  const features = conversionFeatures.png[format as Exclude<ImageFormat, 'png'>]
 
   return (
     <ConverterPage
@@ -117,7 +85,7 @@ export default async function PngConverterPage({ params }: { params: Params }) {
       acceptTypes={{
         'image/png': ['.png'],
       }}
-      features={features[format]}
+      features={features}
       type="image"
     />
   )

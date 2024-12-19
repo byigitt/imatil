@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { ConverterPage } from '@/components/converter-page'
 import type { ImageFormat } from '@/lib/ffmpeg/types'
 import type { Metadata } from 'next'
+import { conversionFeatures } from '@/lib/constants/features'
 
 type TargetFormats = Exclude<ImageFormat, 'jpg' | 'jpeg'>
 
@@ -73,33 +74,7 @@ export default async function JpgConverterPage({ params }: { params: Params }) {
   if (!validFormats.includes(format)) {
     notFound()
   }
-
-  const features = {
-    png: [
-      'Converts JPG images to PNG format',
-      'Lossless quality',
-      'Preserves details',
-      'Perfect for editing',
-      'High color depth',
-      'Fast, browser-based conversion',
-    ],
-    svg: [
-      'Converts JPG images to SVG format',
-      'Scalable vectors',
-      'Resolution independent',
-      'Perfect for logos',
-      'Small file size',
-      'Fast, browser-based conversion',
-    ],
-    webp: [
-      'Converts JPG images to WebP format',
-      'Modern web format',
-      'Superior compression',
-      'Better quality',
-      'Smaller files',
-      'Fast, browser-based conversion',
-    ],
-  } satisfies Record<TargetFormats, string[]>
+  const features = conversionFeatures.jpg[format as Exclude<ImageFormat, 'jpg'>]
 
   return (
     <ConverterPage
@@ -110,7 +85,7 @@ export default async function JpgConverterPage({ params }: { params: Params }) {
       acceptTypes={{
         'image/jpeg': ['.jpg', '.jpeg'],
       }}
-      features={features[format]}
+      features={features}
       type="image"
     />
   )

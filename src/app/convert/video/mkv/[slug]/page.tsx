@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { ConverterPage } from '@/components/converter-page'
 import type { VideoFormat } from '@/lib/ffmpeg/types'
 import type { Metadata } from 'next'
+import { conversionFeatures } from '@/lib/constants/features'
 
 type TargetFormats = Exclude<VideoFormat, 'mkv'>
 
@@ -74,48 +75,7 @@ export default async function MkvConverterPage({ params }: { params: Params }) {
     notFound()
   }
 
-  const features = {
-    avi: [
-      'Converts MKV videos to AVI format',
-      'Wide device compatibility',
-      'Maintains video quality',
-      'Preserves audio tracks',
-      'Efficient conversion',
-      'Fast, browser-based conversion',
-    ],
-    flv: [
-      'Converts MKV videos to FLV format',
-      'Perfect for web streaming',
-      'Reduced file size',
-      'Flash player support',
-      'Quick processing',
-      'Fast, browser-based conversion',
-    ],
-    mov: [
-      'Converts MKV videos to MOV format',
-      'Mac and iOS compatibility',
-      'Professional video format',
-      'High-quality output',
-      'Preserves metadata',
-      'Fast, browser-based conversion',
-    ],
-    mp4: [
-      'Converts MKV videos to MP4 format',
-      'Universal compatibility',
-      'Maintains high quality',
-      'Efficient compression',
-      'Perfect for sharing',
-      'Fast, browser-based conversion',
-    ],
-    webm: [
-      'Converts MKV videos to WebM format',
-      'Modern web format',
-      'Excellent compression',
-      'Open-source standard',
-      'Perfect for streaming',
-      'Fast, browser-based conversion',
-    ],
-  } satisfies Record<TargetFormats, string[]>
+  const features = conversionFeatures.mkv[format as Exclude<VideoFormat, 'mkv'>]
 
   return (
     <ConverterPage
@@ -126,7 +86,7 @@ export default async function MkvConverterPage({ params }: { params: Params }) {
       acceptTypes={{
         'video/x-matroska': ['.mkv'],
       }}
-      features={features[format]}
+      features={features}
       type="video"
     />
   )

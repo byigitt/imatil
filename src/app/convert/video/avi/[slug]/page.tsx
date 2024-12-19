@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { ConverterPage } from '@/components/converter-page'
 import type { VideoFormat } from '@/lib/ffmpeg/types'
 import type { Metadata } from 'next'
+import { conversionFeatures } from '@/lib/constants/features'
 
 type TargetFormats = Exclude<VideoFormat, 'avi'>
 
@@ -75,48 +76,7 @@ export default async function AviConverterPage({ params }: { params: Params }) {
     notFound()
   }
 
-  const features = {
-    flv: [
-      'Converts AVI videos to FLV format',
-      'Optimized for web streaming',
-      'Compatible with Flash players',
-      'Maintains good quality',
-      'Efficient compression',
-      'Fast, browser-based conversion',
-    ],
-    mkv: [
-      'Converts AVI videos to MKV format',
-      'Supports multiple audio tracks',
-      'Preserves video quality',
-      'Maintains subtitles',
-      'Modern container format',
-      'Fast, browser-based conversion',
-    ],
-    mov: [
-      'Converts AVI videos to MOV format',
-      'Perfect for Apple devices',
-      'High-quality conversion',
-      'Professional video format',
-      'Maintains metadata',
-      'Fast, browser-based conversion',
-    ],
-    mp4: [
-      'Converts AVI videos to MP4 format',
-      'Universal compatibility',
-      'Optimized compression',
-      'Perfect for sharing',
-      'Maintains quality',
-      'Fast, browser-based conversion',
-    ],
-    webm: [
-      'Converts AVI videos to WebM format',
-      'Modern web format',
-      'Excellent compression',
-      'Perfect for web videos',
-      'Open-source format',
-      'Fast, browser-based conversion',
-    ],
-  } satisfies Record<TargetFormats, string[]>
+  const features = conversionFeatures.avi[format as Exclude<VideoFormat, 'avi'>]
 
   return (
     <ConverterPage
@@ -127,7 +87,7 @@ export default async function AviConverterPage({ params }: { params: Params }) {
       acceptTypes={{
         'video/x-msvideo': ['.avi'],
       }}
-      features={features[format]}
+      features={features}
       type="video"
     />
   )

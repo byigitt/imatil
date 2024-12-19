@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { ConverterPage } from '@/components/converter-page'
 import type { VideoFormat } from '@/lib/ffmpeg/types'
 import type { Metadata } from 'next'
+import { conversionFeatures } from '@/lib/constants/features'
 
 type TargetFormats = Exclude<VideoFormat, 'mov'>
 
@@ -75,48 +76,7 @@ export default async function MovConverterPage({ params }: { params: Params }) {
     notFound()
   }
 
-  const features = {
-    avi: [
-      'Converts MOV videos to AVI format',
-      'Wide compatibility',
-      'Maintains quality',
-      'Smaller file size',
-      'Windows friendly',
-      'Fast, browser-based conversion',
-    ],
-    flv: [
-      'Converts MOV videos to FLV format',
-      'Web streaming ready',
-      'Flash compatibility',
-      'Reduced file size',
-      'Quick processing',
-      'Fast, browser-based conversion',
-    ],
-    mkv: [
-      'Converts MOV videos to MKV format',
-      'Multiple audio tracks',
-      'Subtitle support',
-      'High quality output',
-      'Modern container',
-      'Fast, browser-based conversion',
-    ],
-    mp4: [
-      'Converts MOV videos to MP4 format',
-      'Universal playback',
-      'Mobile friendly',
-      'Efficient compression',
-      'Perfect for sharing',
-      'Fast, browser-based conversion',
-    ],
-    webm: [
-      'Converts MOV videos to WebM format',
-      'Web optimized',
-      'Modern compression',
-      'Open format',
-      'Streaming ready',
-      'Fast, browser-based conversion',
-    ],
-  } satisfies Record<TargetFormats, string[]>
+  const features = conversionFeatures.mov[format as Exclude<VideoFormat, 'mov'>]
 
   return (
     <ConverterPage
@@ -127,7 +87,7 @@ export default async function MovConverterPage({ params }: { params: Params }) {
       acceptTypes={{
         'video/quicktime': ['.mov'],
       }}
-      features={features[format]}
+      features={features}
       type="video"
     />
   )

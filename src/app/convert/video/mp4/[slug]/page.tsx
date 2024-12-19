@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { ConverterPage } from '@/components/converter-page'
 import type { VideoFormat } from '@/lib/ffmpeg/types'
 import type { Metadata } from 'next'
+import { conversionFeatures } from '@/lib/constants/features'
 
 type TargetFormats = Exclude<VideoFormat, 'mp4'>
 
@@ -74,48 +75,7 @@ export default async function Mp4ConverterPage({ params }: { params: Params }) {
     notFound()
   }
 
-  const features = {
-    avi: [
-      'Converts MP4 videos to AVI format',
-      'Legacy format support',
-      'Wide compatibility',
-      'Maintains quality',
-      'Windows friendly',
-      'Fast, browser-based conversion',
-    ],
-    flv: [
-      'Converts MP4 videos to FLV format',
-      'Flash player support',
-      'Web streaming ready',
-      'Compact file size',
-      'Quick conversion',
-      'Fast, browser-based conversion',
-    ],
-    mkv: [
-      'Converts MP4 videos to MKV format',
-      'Multiple audio tracks',
-      'Subtitle support',
-      'Lossless quality',
-      'Modern container',
-      'Fast, browser-based conversion',
-    ],
-    mov: [
-      'Converts MP4 videos to MOV format',
-      'Apple device support',
-      'Professional editing',
-      'High quality output',
-      'Metadata preservation',
-      'Fast, browser-based conversion',
-    ],
-    webm: [
-      'Converts MP4 videos to WebM format',
-      'Modern web format',
-      'Superior compression',
-      'Open standard',
-      'Perfect for web',
-      'Fast, browser-based conversion',
-    ],
-  } satisfies Record<TargetFormats, string[]>
+  const features = conversionFeatures.mp4[format as Exclude<VideoFormat, 'mp4'>]
 
   return (
     <ConverterPage
@@ -126,7 +86,7 @@ export default async function Mp4ConverterPage({ params }: { params: Params }) {
       acceptTypes={{
         'video/mp4': ['.mp4'],
       }}
-      features={features[format]}
+      features={features}
       type="video"
     />
   )

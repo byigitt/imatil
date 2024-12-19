@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { ConverterPage } from '@/components/converter-page'
 import type { VideoFormat } from '@/lib/ffmpeg/types'
 import type { Metadata } from 'next'
+import { conversionFeatures } from '@/lib/constants/features'
 
 type TargetFormats = Exclude<VideoFormat, 'webm'>
 
@@ -75,48 +76,7 @@ export default async function WebmConverterPage({ params }: { params: Params }) 
     notFound()
   }
 
-  const features = {
-    avi: [
-      'Converts WebM videos to AVI format',
-      'Wide device support',
-      'Legacy compatibility',
-      'Quality preservation',
-      'Windows optimized',
-      'Fast, browser-based conversion',
-    ],
-    flv: [
-      'Converts WebM videos to FLV format',
-      'Flash compatibility',
-      'Streaming support',
-      'Small file size',
-      'Quick processing',
-      'Fast, browser-based conversion',
-    ],
-    mkv: [
-      'Converts WebM videos to MKV format',
-      'Multiple tracks support',
-      'Subtitle integration',
-      'High quality output',
-      'Modern container',
-      'Fast, browser-based conversion',
-    ],
-    mov: [
-      'Converts WebM videos to MOV format',
-      'Mac/iOS compatible',
-      'Professional format',
-      'Quality preservation',
-      'Editor friendly',
-      'Fast, browser-based conversion',
-    ],
-    mp4: [
-      'Converts WebM videos to MP4 format',
-      'Universal playback',
-      'Wide compatibility',
-      'Efficient compression',
-      'Perfect for sharing',
-      'Fast, browser-based conversion',
-    ],
-  } satisfies Record<TargetFormats, string[]>
+  const features = conversionFeatures.webm[format as Exclude<VideoFormat, 'webm'>]
 
   return (
     <ConverterPage
@@ -127,7 +87,7 @@ export default async function WebmConverterPage({ params }: { params: Params }) 
       acceptTypes={{
         'video/webm': ['.webm'],
       }}
-      features={features[format]}
+      features={features}
       type="video"
     />
   )

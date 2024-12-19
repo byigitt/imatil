@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { ConverterPage } from '@/components/converter-page'
 import type { VideoFormat } from '@/lib/ffmpeg/types'
 import type { Metadata } from 'next'
+import { conversionFeatures } from '@/lib/constants/features'
 
 type TargetFormats = Exclude<VideoFormat, 'flv'>
 
@@ -75,48 +76,7 @@ export default async function FlvConverterPage({ params }: { params: Params }) {
     notFound()
   }
 
-  const features = {
-    avi: [
-      'Converts FLV videos to AVI format',
-      'Wide device support',
-      'Legacy compatibility',
-      'Quality preservation',
-      'Windows optimized',
-      'Fast, browser-based conversion',
-    ],
-    mkv: [
-      'Converts FLV videos to MKV format',
-      'Multiple tracks support',
-      'Subtitle integration',
-      'High quality output',
-      'Modern container',
-      'Fast, browser-based conversion',
-    ],
-    mov: [
-      'Converts FLV videos to MOV format',
-      'Mac/iOS compatible',
-      'Professional format',
-      'Quality preservation',
-      'Editor friendly',
-      'Fast, browser-based conversion',
-    ],
-    mp4: [
-      'Converts FLV videos to MP4 format',
-      'Universal playback',
-      'Wide compatibility',
-      'Efficient compression',
-      'Perfect for sharing',
-      'Fast, browser-based conversion',
-    ],
-    webm: [
-      'Converts FLV videos to WebM format',
-      'Modern web format',
-      'Superior compression',
-      'Open standard',
-      'Perfect for web',
-      'Fast, browser-based conversion',
-    ],
-  } satisfies Record<TargetFormats, string[]>
+  const features = conversionFeatures.flv[format as Exclude<VideoFormat, 'flv'>]
 
   return (
     <ConverterPage
@@ -127,7 +87,7 @@ export default async function FlvConverterPage({ params }: { params: Params }) {
       acceptTypes={{
         'video/x-flv': ['.flv'],
       }}
-      features={features[format]}
+      features={features}
       type="video"
     />
   )
