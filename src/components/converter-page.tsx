@@ -15,7 +15,7 @@ interface ConverterPageProps {
   title: string
   description: string
   acceptTypes: Record<string, string[]>
-  features: string[]
+  features: string[] | undefined
   type: 'video' | 'image'
 }
 
@@ -108,7 +108,7 @@ export function ConverterPage({
             <div className="space-y-2 text-sm">
               <h2 className="font-semibold">About {fromFormat.toUpperCase()} to {toFormat.toUpperCase()} Conversion</h2>
               <ul className="grid gap-1.5 text-muted-foreground">
-                {features.map((feature) => (
+                {features?.map((feature) => (
                   <li key={feature}>• {feature}</li>
                 ))}
               </ul>
