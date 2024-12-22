@@ -1,18 +1,20 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { FileVideo, ArrowRight, Image, Loader2 } from 'lucide-react'
+import { FileVideo, ArrowRight, Image, Loader2, FileIcon, Film, Camera } from 'lucide-react'
 import { Card } from '@/components/ui/card'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Badge } from "@/components/ui/badge"
+import { Separator } from "@/components/ui/separator"
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card"
+import { cn } from "@/lib/utils"
 
 const VIDEO_SOURCE_FORMATS = ['WebM', 'MP4', 'AVI', 'MOV', 'FLV'] as const
 const IMAGE_SOURCE_FORMATS = ['JPG', 'PNG', 'WebP', 'AVIF'] as const
@@ -35,6 +37,21 @@ const IMAGE_TARGET_FORMATS: Record<ImageSourceFormat, readonly string[]> = {
   'WebP': ['JPG', 'PNG', 'AVIF'],
   'AVIF': ['WebP', 'JPG', 'PNG'],
 } as const
+
+const FORMAT_INFO = {
+  'WebM': { description: 'Modern web-optimized format', badge: 'Web' },
+  'MP4': { description: 'Universal compatibility', badge: 'Universal' },
+  'AVI': { description: 'High quality, larger size', badge: 'Legacy' },
+  'MOV': { description: 'Apple ecosystem format', badge: 'Apple' },
+  'FLV': { description: 'Flash video format', badge: 'Legacy' },
+  'JPG': { description: 'Compressed photos', badge: 'Photos' },
+  'PNG': { description: 'Lossless with transparency', badge: 'Graphics' },
+  'WebP': { description: 'Modern efficient format', badge: 'Modern' },
+  'AVIF': { description: 'Next-gen image format', badge: 'Next-Gen' },
+} as const
+
+type FormatInfo = typeof FORMAT_INFO
+type FormatKey = keyof FormatInfo
 
 export default function Home() {
   const router = useRouter()
@@ -79,88 +96,147 @@ export default function Home() {
 
         <Card className="p-6">
           <div className="space-y-6">
-            <Tabs value={mediaType} onValueChange={(v) => handleMediaTypeChange(v as MediaType)}>
+            <Tabs value={mediaType} onValueChange={(v) => handleMediaTypeChange(v as MediaType)} className="w-full">
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="video" className="space-x-2">
-                  <FileVideo className="h-4 w-4" />
+                  <Film className="h-4 w-4" />
                   <span>Video</span>
                 </TabsTrigger>
                 <TabsTrigger value="image" className="space-x-2">
-                  <Image className="h-4 w-4" />
+                  <Camera className="h-4 w-4" />
                   <span>Image</span>
                 </TabsTrigger>
               </TabsList>
             </Tabs>
 
-            <div className="space-y-2">
-              <h2 className="font-semibold">What format is your {mediaType} in?</h2>
-              <Select
-                value={sourceFormat}
-                onValueChange={(value) => {
-                  setSourceFormat(value)
-                  setTargetFormat('')
-                }}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder={"Select source format"} />
-                </SelectTrigger>
-                <SelectContent>
-                  {sourceFormats.map((format) => (
-                    <SelectItem key={format} value={format}>
-                      {format}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {sourceFormat && (
+            <div className="space-y-4">
               <div className="space-y-2">
-                <h2 className="font-semibold">What format do you want to convert to?</h2>
-                <Select
-                  value={targetFormat}
-                  onValueChange={setTargetFormat}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select target format" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {availableTargetFormats.map((format) => (
-                      <SelectItem key={format} value={format}>
-                        {format}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <h2 className="font-semibold flex items-center gap-2">
+                  Source Format
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Badge variant="outline">Step 1</Badge>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Select the format of your original file</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </h2>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {sourceFormats.map((format) => (
+                    <TooltipProvider key={format}>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant={sourceFormat === format ? "default" : "outline"}
+                            className="w-full"
+                            onClick={() => {
+                              setSourceFormat(format)
+                              setTargetFormat('')
+                            }}
+                          >
+                            <div className="flex items-center justify-between w-full">
+                              <span>{format}</span>
+                              <Badge 
+                                variant={sourceFormat === format ? "outline" : "secondary"}
+                                className={cn("ml-2", sourceFormat === format && "border-white")}
+                              >
+                                {FORMAT_INFO[format as FormatKey].badge}
+                              </Badge>
+                            </div>
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom" className="w-60">
+                          <p className="text-sm">{FORMAT_INFO[format as FormatKey].description}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  ))}
+                </div>
               </div>
-            )}
 
-            {sourceFormat && targetFormat && (
-              <div className="pt-2">
-                <Button
-                  className="w-full"
-                  size="lg"
-                  onClick={handleConvert}
-                  disabled={isLoading}
-                >
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                      Redirecting...
-                    </>
-                  ) : (
-                    <>
-                      {mediaType === 'video' ? (
-                        <FileVideo className="mr-2 h-5 w-5" />
+              {sourceFormat && (
+                <>
+                  <Separator className="my-4" />
+                  <div className="space-y-2">
+                    <h2 className="font-semibold flex items-center gap-2">
+                      Target Format
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <Badge variant="outline">Step 2</Badge>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Choose the format you want to convert to</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </h2>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                      {availableTargetFormats.map((format) => (
+                        <TooltipProvider key={format}>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant={targetFormat === format ? "default" : "outline"}
+                                className="w-full"
+                                onClick={() => setTargetFormat(format)}
+                              >
+                                <div className="flex items-center justify-between w-full">
+                                  <span>{format}</span>
+                                  <Badge 
+                                    variant={targetFormat === format ? "outline" : "secondary"}
+                                    className={cn("ml-2", targetFormat === format && "border-white")}
+                                  >
+                                    {FORMAT_INFO[format as FormatKey].badge}
+                                  </Badge>
+                                </div>
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent side="bottom" className="w-60">
+                              <p className="text-sm">{FORMAT_INFO[format as FormatKey].description}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {sourceFormat && targetFormat && (
+                <>
+                  <Separator className="my-4" />
+                  <div className="pt-2">
+                    <Button
+                      className="w-full"
+                      size="lg"
+                      onClick={handleConvert}
+                      disabled={isLoading}
+                    >
+                      {isLoading ? (
+                        <>
+                          <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                          Redirecting...
+                        </>
                       ) : (
-                        <Image className="mr-2 h-5 w-5" />
+                        <>
+                          {mediaType === 'video' ? (
+                            <FileVideo className="mr-2 h-5 w-5" />
+                          ) : (
+                            <Image className="mr-2 h-5 w-5" />
+                          )}
+                          Convert {sourceFormat} to {targetFormat}
+                          <ArrowRight className="ml-2 h-5 w-5" />
+                        </>
                       )}
-                      Convert {sourceFormat} to {targetFormat}
-                    </>
-                  )}
-                </Button>
-              </div>
-            )}
+                    </Button>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </Card>
 
@@ -168,14 +244,38 @@ export default function Home() {
           <div className="space-y-2 text-sm">
             <h2 className="font-semibold">Features</h2>
             <ul className="grid gap-1.5 text-muted-foreground sm:grid-cols-2">
-              <li>• Client-side conversion</li>
-              <li>• No file upload needed</li>
-              <li>• High-quality output</li>
-              <li>• Multiple format support</li>
-              <li>• Adjustable quality</li>
-              <li>• Fast processing</li>
-              <li>• Video & image support</li>
-              <li>• Modern formats (WebP, AVIF)</li>
+              <li className="flex items-center gap-2">
+                <Badge variant="secondary" className="h-1.5 w-1.5 rounded-full p-0" />
+                Client-side conversion
+              </li>
+              <li className="flex items-center gap-2">
+                <Badge variant="secondary" className="h-1.5 w-1.5 rounded-full p-0" />
+                No file upload needed
+              </li>
+              <li className="flex items-center gap-2">
+                <Badge variant="secondary" className="h-1.5 w-1.5 rounded-full p-0" />
+                High-quality output
+              </li>
+              <li className="flex items-center gap-2">
+                <Badge variant="secondary" className="h-1.5 w-1.5 rounded-full p-0" />
+                Multiple format support
+              </li>
+              <li className="flex items-center gap-2">
+                <Badge variant="secondary" className="h-1.5 w-1.5 rounded-full p-0" />
+                Adjustable quality
+              </li>
+              <li className="flex items-center gap-2">
+                <Badge variant="secondary" className="h-1.5 w-1.5 rounded-full p-0" />
+                Fast processing
+              </li>
+              <li className="flex items-center gap-2">
+                <Badge variant="secondary" className="h-1.5 w-1.5 rounded-full p-0" />
+                Video & image support
+              </li>
+              <li className="flex items-center gap-2">
+                <Badge variant="secondary" className="h-1.5 w-1.5 rounded-full p-0" />
+                Modern formats
+              </li>
             </ul>
           </div>
         </div>
